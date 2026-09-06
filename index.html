@@ -183,18 +183,15 @@ body::before{
 .ans.picked{background:var(--hot);color:var(--paper)}
 
 /* ── result ────────────────────────────── */
-.res-code{
-  display:flex;gap:6px;justify-content:center;margin-bottom:14px;
+#s-result{padding:12px 10px 30px}
+#capture{background:var(--paper);border-radius:22px;padding:16px 14px}
+.res-tail{padding:0 14px}
+.res-head{
+  font-family:var(--util);font-weight:800;font-size:12px;letter-spacing:.14em;
+  text-align:center;color:var(--ink);
+  background:var(--butter);border:3px solid var(--ink);border-radius:999px;
+  padding:6px 15px;margin:0 auto 16px;display:table;
 }
-.chip{
-  font-family:var(--display);font-size:23px;line-height:1;
-  width:46px;height:46px;display:grid;place-items:center;
-  border:3px solid var(--ink);border-radius:14px;
-  background:var(--butter);box-shadow:3px 3px 0 var(--ink);
-}
-.chip:nth-child(2){background:var(--sky)}
-.chip:nth-child(3){background:var(--bubble)}
-.chip:nth-child(4){background:var(--paper)}
 
 .photo{
   border:3px solid var(--ink);border-radius:20px;overflow:hidden;
@@ -207,8 +204,10 @@ body::before{
   font-family:var(--display);font-size:clamp(27px,8.4vw,34px);line-height:1.14;
   text-align:center;margin:20px 0 0;text-wrap:balance;
   color:var(--hot);
-  text-shadow:2px 0 0 var(--ink),-2px 0 0 var(--ink),0 2px 0 var(--ink),0 -2px 0 var(--ink),
-    5px 5px 0 var(--butter);
+  text-shadow:
+    1px 0 0 var(--ink),-1px 0 0 var(--ink),0 1px 0 var(--ink),0 -1px 0 var(--ink),
+    1px 1px 0 var(--ink),-1px 1px 0 var(--ink),1px -1px 0 var(--ink),-1px -1px 0 var(--ink),
+    4px 4px 0 var(--butter);
 }
 .res-catch{
   text-align:center;font-size:16px;margin:16px 0 0;color:var(--hot-deep);
@@ -262,11 +261,6 @@ body::before{
 .res-actions button:hover{transform:translate(2px,3px);box-shadow:1px 1px 0 var(--ink)}
 .res-actions button.primary:hover{box-shadow:1px 1px 0 var(--hot)}
 
-.legend{
-  margin-top:16px;font-family:var(--util);font-weight:500;
-  font-size:11.5px;line-height:1.85;color:var(--ink-soft);text-align:center;
-}
-
 :focus-visible{outline:3px solid var(--sky);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;transition-duration:.01ms !important}
@@ -313,24 +307,29 @@ body::before{
 
   <!-- RESULT -->
   <section class="screen" id="s-result">
-    <div class="res-code" id="code"></div>
-    <div class="photo"><img id="res-img" alt=""></div>
-    <h2 class="res-name" id="res-name"></h2>
-    <p class="res-catch" id="res-catch"></p>
-    <p class="res-desc" id="res-desc"></p>
-    <div class="bars" id="bars"></div>
-    <div class="match">
-      <span class="match-tag">환상의 짝꿍</span>
-      <span class="match-name" id="match"></span>
+    <div id="capture">
+      <div class="res-head">가나디 유형테스트</div>
+      <div class="photo"><img id="res-img" alt=""></div>
+      <h2 class="res-name" id="res-name"></h2>
+      <p class="res-catch" id="res-catch"></p>
+      <p class="res-desc" id="res-desc"></p>
+      <div class="bars" id="bars"></div>
+      <div class="match">
+        <span class="match-tag">환상의 짝꿍</span>
+        <span class="match-name" id="match"></span>
+      </div>
     </div>
-    <div class="res-actions">
-      <button id="copy">결과 복사하기</button>
-      <button class="primary" id="again">다시 하기</button>
+    <div class="res-tail">
+      <div class="res-actions">
+        <button id="copy">결과 이미지 복사</button>
+        <button class="primary" id="again">다시 하기</button>
+      </div>
     </div>
-    <p class="legend" id="legend"></p>
   </section>
 
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 const PHOTOS={
@@ -399,42 +398,43 @@ const CHOICES = [
 
 const TYPES = {
   "흥촉정쉼":{name:"상큼발랄 겸둥이가나디", catch:"어디에 있든 그 자리가 밝아진다",
-    desc:"새로운 것도 좋고 사람도 좋은데, 급한 법이 없습니다. 먼저 다가가서 분위기를 풀어놓고는 정작 본인은 편안하게 앉아 있죠. 같이 있으면 이상하게 마음이 놓이는 타입.", m:"잠결뚝불"},
+    desc:"새로운 것도 좋고 사람도 좋은데, 급한 법이 없습니다. 먼저 다가가서 분위기를 풀어놓고는 정작 본인은 편안하게 앉아 있죠. 같이 있으면 이상하게 마음이 놓이는 타입. 어색한 자리에 이 가나디 하나만 있으면 절반은 해결됩니다.", m:"잠결뚝불"},
   "흥촉정불":{name:"귀염둥이 똥가나디", catch:"사고도 애교도 만렙",
-    desc:"텐션이 항상 올라와 있고, 재밌어 보이면 결과는 나중에 생각합니다. 가끔 일을 벌여놓지만 미워할 수가 없어요. 주변 가나디들이 결국 웃고 넘어가는 이유가 있습니다.", m:"잠결뚝쉼"},
+    desc:"텐션이 항상 올라와 있고, 재밌어 보이면 결과는 나중에 생각합니다. 가끔 일을 벌여놓지만 미워할 수가 없어요. 주변 가나디들이 결국 웃고 넘어가는 이유가 있습니다. 사고 친 다음에 짓는 표정이 이미 사과라서, 화낼 타이밍을 놓치게 되거든요.", m:"잠결뚝쉼"},
   "흥촉뚝쉼":{name:"자유로운 방랑가나디", catch:"어울리되, 매이지 않는다",
-    desc:"사람들 사이에 잘 섞이지만 한곳에 오래 묶이지 않습니다. 훌쩍 떠나고 훌쩍 돌아와도 아무렇지 않죠. 곁에 두면 편한데 붙잡으려 하면 사라지는 타입.", m:"잠결정불"},
+    desc:"사람들 사이에 잘 섞이지만 한곳에 오래 묶이지 않습니다. 훌쩍 떠나고 훌쩍 돌아와도 아무렇지 않죠. 곁에 두면 편한데 붙잡으려 하면 사라지는 타입. 대신 돌아올 때는 늘 재밌는 이야기를 하나씩 들고 옵니다.", m:"잠결정불"},
   "흥촉뚝불":{name:"호기심대장 탐험가나디", catch:"궁금하면 일단 출발",
-    desc:"세상에 안 궁금한 게 없고, 궁금하면 바로 몸이 먼저 갑니다. 계획보다 속도가 앞서지만 그만큼 남들이 못 본 걸 제일 먼저 봅니다.", m:"잠결정쉼"},
+    desc:"세상에 안 궁금한 게 없고, 궁금하면 바로 몸이 먼저 갑니다. 계획보다 속도가 앞서지만 그만큼 남들이 못 본 걸 제일 먼저 봅니다. 시작은 많고 마무리는 가끔 놓치지만, 그 시작이 없으면 아무 일도 안 일어나죠.", m:"잠결정쉼"},
   "흥결정쉼":{name:"느긋한 여유가나디", catch:"급할 게 뭐 있나요",
-    desc:"익숙한 사람들과 익숙한 자리에서 가장 편안합니다. 서두르는 법이 없어서 옆에 있는 가나디까지 같이 느슨해져요. 조급한 무리에 꼭 한 명 필요한 존재.", m:"잠촉뚝불"},
+    desc:"익숙한 사람들과 익숙한 자리에서 가장 편안합니다. 서두르는 법이 없어서 옆에 있는 가나디까지 같이 느슨해져요. 조급한 무리에 꼭 한 명 필요한 존재. 급한 일이 생겨도 이 가나디 앞에서는 이상하게 별일 아닌 것처럼 느껴집니다.", m:"잠촉뚝불"},
   "흥결정불":{name:"늠름한 의젓가나디", catch:"챙길 건 다 챙기는 든든한 맏이",
-    desc:"활발하면서도 무게중심이 잡혀 있습니다. 놀 때는 같이 놀고, 챙길 때는 확실하게 챙기죠. 무리에서 자연스럽게 기대게 되는 타입입니다.", m:"잠촉뚝쉼"},
+    desc:"활발하면서도 무게중심이 잡혀 있습니다. 놀 때는 같이 놀고, 챙길 때는 확실하게 챙기죠. 무리에서 자연스럽게 기대게 되는 타입입니다. 정작 본인은 기대는 법을 잘 몰라서, 가끔은 먼저 물어봐 줘야 해요.", m:"잠촉뚝쉼"},
   "흥결뚝쉼":{name:"도도한 시크가나디", catch:"좋아하는데 티는 안 냅니다",
-    desc:"사람을 싫어하는 게 아니라 표현을 아낄 뿐입니다. 불러도 바로 안 오지만 결국 옆자리에 와 있어요. 한 번 마음을 열면 그때부터 진짜입니다.", m:"잠촉정불"},
+    desc:"사람을 싫어하는 게 아니라 표현을 아낄 뿐입니다. 불러도 바로 안 오지만 결국 옆자리에 와 있어요. 한 번 마음을 열면 그때부터 진짜입니다. 말수가 적은 대신 한 번 뱉은 말은 끝까지 지키는 편이에요.", m:"잠촉정불"},
   "흥결뚝불":{name:"근엄한 대장가나디", catch:"기준이 확실한 사람",
-    desc:"자기 원칙이 뚜렷하고 필요할 때 앞에 섭니다. 말은 적지만 결정은 빠르죠. 무리가 흔들릴 때 중심을 잡아주는 타입입니다.", m:"잠촉정쉼"},
+    desc:"자기 원칙이 뚜렷하고 필요할 때 앞에 섭니다. 말은 적지만 결정은 빠르죠. 무리가 흔들릴 때 중심을 잡아주는 타입입니다. 다만 기준이 뚜렷한 만큼, 스스로에게 제일 엄격한 것도 이 유형이에요.", m:"잠촉정쉼"},
   "잠촉정쉼":{name:"몽글몽글 감성가나디", catch:"조용한 데서 마음이 자랍니다",
-    desc:"혼자 있는 시간에 생각이 깊어지고, 사소한 것에도 잘 감동합니다. 표현은 조용하지만 마음의 온도가 높은 타입. 가까운 가나디들만 아는 다정함이 있어요.", m:"흥결뚝불"},
+    desc:"혼자 있는 시간에 생각이 깊어지고, 사소한 것에도 잘 감동합니다. 표현은 조용하지만 마음의 온도가 높은 타입. 가까운 가나디들만 아는 다정함이 있어요. 말수는 적어도 기억하고 있는 건 제일 많은 쪽입니다.", m:"흥결뚝불"},
   "잠촉정불":{name:"눈치백단 센스가나디", catch:"말 안 해도 다 압니다",
-    desc:"공기가 바뀌는 걸 제일 먼저 알아챕니다. 먼저 챙기고 먼저 움직이죠. 대신 혼자 너무 많이 읽어서 지칠 때가 있으니 가끔은 모른 척도 필요합니다.", m:"흥결뚝쉼"},
+    desc:"공기가 바뀌는 걸 제일 먼저 알아챕니다. 먼저 챙기고 먼저 움직이죠. 대신 혼자 너무 많이 읽어서 지칠 때가 있으니 가끔은 모른 척도 필요합니다. 챙김을 받아본 적은 의외로 적어서, 누가 먼저 물어봐 주면 크게 감동해요.", m:"흥결뚝쉼"},
   "잠촉뚝쉼":{name:"엉뚱한 4차원가나디", catch:"생각의 회로가 남다릅니다",
-    desc:"조용한데 머릿속은 한 번도 조용한 적이 없습니다. 남들이 안 하는 각도로 보고, 그게 가끔 정답이에요. 굳이 설명하지 않는 것도 이 유형의 매력.", m:"흥결정불"},
+    desc:"조용한데 머릿속은 한 번도 조용한 적이 없습니다. 남들이 안 하는 각도로 보고, 그게 가끔 정답이에요. 굳이 설명하지 않는 것도 이 유형의 매력. 한참 뒤에야 “아 그 얘기가 이거였구나” 싶은 순간이 옵니다.", m:"흥결정불"},
   "잠촉뚝불":{name:"야무진 똑쟁이가나디", catch:"조용히, 다 해냅니다",
-    desc:"떠들지 않고 준비를 끝내놓는 타입입니다. 알아서 파악하고 알아서 마무리하죠. 티를 안 내서 그렇지 무리에서 제일 많은 일을 하고 있을 확률이 높습니다.", m:"흥결정쉼"},
+    desc:"떠들지 않고 준비를 끝내놓는 타입입니다. 알아서 파악하고 알아서 마무리하죠. 티를 안 내서 그렇지 무리에서 제일 많은 일을 하고 있을 확률이 높습니다. 부탁하면 될 걸 혼자 다 해버려서, 주변이 알아채는 게 늘 늦어요.", m:"흥결정쉼"},
   "잠결정쉼":{name:"잠만보 이불가나디", catch:"침대와 한 몸, 세상 평화",
-    desc:"쉬는 게 특기이고 그게 진짜 능력입니다. 좁은 관계에 깊게 정을 붙이고, 그 안에서 완전히 편안해져요. 같이 아무것도 안 하는 게 즐거운 사이를 만듭니다.", m:"흥촉뚝불"},
+    desc:"쉬는 게 특기이고 그게 진짜 능력입니다. 좁은 관계에 깊게 정을 붙이고, 그 안에서 완전히 편안해져요. 같이 아무것도 안 하는 게 즐거운 사이를 만듭니다. 세상이 아무리 바빠도 이 가나디의 하루는 제 속도로 흘러갑니다.", m:"흥촉뚝불"},
   "잠결정불":{name:"수줍은 소심가나디", catch:"마음은 큰데 표현이 조심스러워요",
-    desc:"먼저 다가가는 게 어렵지만 한 번 친해지면 누구보다 깊습니다. 상대 반응을 오래 곱씹는 편이라 마음 쓰는 양이 많아요. 알아주는 사람에게는 최고의 가나디.", m:"흥촉뚝쉼"},
+    desc:"먼저 다가가는 게 어렵지만 한 번 친해지면 누구보다 깊습니다. 상대 반응을 오래 곱씹는 편이라 마음 쓰는 양이 많아요. 알아주는 사람에게는 최고의 가나디. 먼저 말을 걸어준 가나디를 오래오래 기억합니다.", m:"흥촉뚝쉼"},
   "잠결뚝쉼":{name:"새침한 공주가나디", catch:"내 페이스, 내 취향",
-    desc:"아무나 받아주지 않고, 서두르지도 않습니다. 취향이 확실해서 좋아하는 것만 곁에 두죠. 까다로워 보이지만 그만큼 고른 것에는 진심입니다.", m:"흥촉정불"},
+    desc:"아무나 받아주지 않고, 서두르지도 않습니다. 취향이 확실해서 좋아하는 것만 곁에 두죠. 까다로워 보이지만 그만큼 고른 것에는 진심입니다. 한 번 내 사람이라고 정하면 티는 안 내도 끝까지 챙겨요.", m:"흥촉정불"},
   "잠결뚝불":{name:"성실한 루틴가나디", catch:"정해진 대로, 착실하게",
-    desc:"흐트러지는 걸 싫어하고 자기 루틴이 확실합니다. 조용히 할 일을 끝내놓고 결과로 말하죠. 요란하지 않지만 가장 믿을 수 있는 타입입니다.", m:"흥촉정쉼"}
+    desc:"흐트러지는 걸 싫어하고 자기 루틴이 확실합니다. 조용히 할 일을 끝내놓고 결과로 말하죠. 요란하지 않지만 가장 믿을 수 있는 타입입니다. 약속한 건 반드시 지켜서, 주변이 이 가나디를 기준으로 계획을 짤 정도예요.", m:"흥촉정쉼"}
 };
 
 /* ── state ─────────────────────────────── */
 const answers = new Array(QUESTIONS.length).fill(null);
 let idx = 0;
+let current = null;
 
 const $ = id => document.getElementById(id);
 const screens = {cover:$("s-cover"), quiz:$("s-quiz"), result:$("s-result")};
@@ -499,6 +499,43 @@ $("again").addEventListener("click", () => {
   answers.fill(null); idx = 0; render(); show("cover");
 });
 
+/* ── copy result as an image ───────────── */
+function resultText(){
+  if (!current) return "가나디 성격 유형테스트";
+  return "가나디 유형테스트\n나는 " + current.t.name + "\n“" + current.t.catch +
+         "”\n환상의 짝꿍: " + TYPES[current.t.m].name;
+}
+
+function renderCard(){
+  return html2canvas($("capture"), {
+    backgroundColor:"#FFFDFE",
+    scale:2,
+    useCORS:true,
+    logging:false
+  }).then(canvas => new Promise(res => canvas.toBlob(res, "image/png")));
+}
+
+$("copy").addEventListener("click", async () => {
+  const btn = $("copy");
+  const done = msg => {
+    btn.textContent = msg;
+    setTimeout(() => { btn.textContent = "결과 이미지 복사"; }, 2400);
+  };
+  if (typeof html2canvas === "undefined" || !navigator.clipboard || !window.ClipboardItem){
+    try { await navigator.clipboard.writeText(resultText()); done("텍스트로 복사했어요"); }
+    catch { done("복사 실패"); }
+    return;
+  }
+  btn.textContent = "이미지 만드는 중…";
+  try {
+    await navigator.clipboard.write([new ClipboardItem({"image/png": renderCard()})]);
+    done("이미지 복사됐어요!");
+  } catch {
+    try { await navigator.clipboard.writeText(resultText()); done("텍스트로 복사했어요"); }
+    catch { done("복사 실패"); }
+  }
+});
+
 /* ── scoring ───────────────────────────── */
 function score(){
   const sums = {"흥":0,"촉":0,"정":0,"쉼":0};
@@ -510,15 +547,7 @@ function finish(){
   const sums = score();
   const code = AXIS_ORDER.map(a => sums[a] >= 13 ? AXES[a].hi : AXES[a].lo).join("");
   const t = TYPES[code];
-
-  $("code").innerHTML = "";
-  [...code].forEach(ch => {
-    const c = document.createElement("div");
-    c.className = "chip";
-    c.textContent = ch;
-    c.title = LETTER[ch];
-    $("code").appendChild(c);
-  });
+  current = {code, t};
 
   $("res-img").src = PHOTOS[code];
   $("res-img").alt = t.name;
@@ -546,16 +575,7 @@ function finish(){
     requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = target; }));
   });
 
-  $("legend").textContent = [...code].map(ch => ch + " · " + LETTER[ch]).join("   /   ");
-
-  $("copy").textContent = "결과 복사하기";
-  $("copy").onclick = () => {
-    const txt = "가나디 성격 유형테스트\n나는 [" + code + "] " + t.name + "\n“" + t.catch + "”\n환상의 짝꿍: " + TYPES[t.m].name;
-    navigator.clipboard.writeText(txt)
-      .then(() => { $("copy").textContent = "복사했어요!"; })
-      .catch(() => { $("copy").textContent = "복사 실패"; });
-  };
-
+  $("copy").textContent = "결과 이미지 복사";
   show("result");
 }
 
